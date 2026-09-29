@@ -44,7 +44,7 @@
 
 \newcommand*{\BA@std@betreiber}{FAU FabLab, Friedrich-Alexander-Universität Erlangen-Nürnberg}
 \newcommand*{\BA@std@bereich}{Raum U1.239, Hörsaalgebäude (MHB), Erwin-Rommel-Str.\ 60, 91058 Erlangen}
-\newcommand*{\BA@std@logo}{fablab-document/logo}
+\newcommand*{\BA@std@logo}{fablab-document/logo/Logo/Logo}
 \newcommand*{\BA@std@schrift}{\small}
 
 \pgfkeys{
@@ -169,7 +169,7 @@
     \tcblower
     \begin{tabularx}{\linewidth}{@{}X@{}r@{}}
       {\Huge\bfseries BETRIEBSANWEISUNG} &
-        \raisebox{-0.5mm}{\includegraphics[height=7mm]{\BA@logo}} \\[1mm]
+        \raisebox{-0.5mm}{\IfFileExists{\BA@logo.pdf}{\includegraphics[height=7mm]{\BA@logo}}{\textbf{FAU FabLab}}} \\[1mm]
       {\small\BA@grundlage} &
         {\small Nr.\ \BA@nummer\quad Stand: \ifBA@entwurf
           \textcolor{red}{\bfseries Entwurf}\else\BA@stand\fi}
