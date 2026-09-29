@@ -54,11 +54,14 @@ Der gemeinsame Workflow [`.github/workflows/pdf.yml`](.github/workflows/pdf.yml)
 und stellt sie als Artefakt bereit. Bei Pushes auf den Hauptbranch legt er ein Release
 `vJJJJ.MM.TT` mit den PDFs an; mehrere Pushes am selben Tag ersetzen das Release des Tages.
 
-Die Version steht rechts in der Fußzeile (`Version 2026.09.29`). Builds außerhalb des
-Hauptbranches heißen `JJJJ.MM.TT-entwurf-<commit>`. Lokal geht das mit
+Die Version steht rechts in der Fußzeile (`Version 2026.09.29`). `make` nimmt dafür
+das Datum des letzten Commits, bei nicht committeten Änderungen mit `-entwurf`.
+Derselbe Commit ergibt also immer dieselbe Version, egal wann und wo gebaut wird.
+In der Action heißen Builds außerhalb des Hauptbranches `JJJJ.MM.TT-entwurf-<commit>`.
 
 ```bash
-make VERSION=2026.09.29
+make -s version          # Version anzeigen
+make VERSION=2026.09.29  # Version selbst festlegen
 ```
 
-Ohne `VERSION` steht wie bisher das Datum in der Fußzeile.
+Ohne git (und ohne `VERSION`) steht wie bisher das Datum in der Fußzeile.

@@ -111,13 +111,35 @@ revision.tex: $(VCSTURD)
 AUXFILES += revision.aux
 endif
 
-# Versionsnummer für die Fußzeile, z.B. "make VERSION=2026.09.29".
-# Erzeugt version.tex mit \Version{}; ohne VERSION bleibt alles wie bisher.
+# Versionsnummer für die Fußzeile (\Version in version.tex).
+# Standard: Datum des letzten Commits (JJJJ.MM.TT), bei nicht committeten
+# Änderungen mit "-entwurf". Überschreiben mit "make VERSION=...".
+# Ohne git und ohne VERSION steht wie bisher das Datum in der Fußzeile.
+ifeq ($(VERSION),)
+ifeq ($(shell git status >/dev/null 2>&1 && echo USING_GIT),USING_GIT)
+VERSION := $(shell TZ=Europe/Berlin git log -1 --format=%cd --date=format-local:%Y.%m.%d 2>/dev/null)
+ifneq ($(VERSION),)
+ifneq ($(shell git status --porcelain --untracked-files=no 2>/dev/null),)
+VERSION := $(VERSION)-entwurf
+endif
+endif
+endif
+endif
+
+.PHONY: version FORCE
+FORCE:
+
+# Version ausgeben, z.B. für die GitHub Action: make -s version
+version:
+	@echo $(VERSION)
+
 ifneq ($(VERSION),)
 REVDEPS += version.tex
-.PHONY: version.tex
-version.tex:
-	/bin/echo '\newcommand{\Version}'"{$(VERSION)}" > $@
+# nur neu schreiben, wenn sich die Version ändert, sonst würde jedes
+# "make" alle PDFs neu bauen
+version.tex: FORCE
+	@/bin/echo '\newcommand{\Version}'"{$(VERSION)}" > $@.neu
+	@if cmp -s $@.neu $@; then rm $@.neu; else mv $@.neu $@; fi
 endif
 
 # to generate aux but not pdf from pdflatex, use -draftmode
@@ -161,7 +183,7 @@ clean: clean-output
 		$(T).out $(T).blg $(T).bbl \
 		$(T).lof $(T).lot $(T).toc $(T).idx \
 		$(T).nav $(T).snm) \
-		$(REVDEPS) version.tex $(AUXFILES) $(LOGFILES) \
+		$(REVDEPS) version.tex version.tex.neu $(AUXFILES) $(LOGFILES) \
 		$(EXTRACLEAN)
 
 copy-output: pdf

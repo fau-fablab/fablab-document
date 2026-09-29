@@ -38,13 +38,14 @@ jobs:
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           git submodule update --init --recursive
 
-      - name: Version aus dem Datum bestimmen
+      - name: Version bestimmen
         id: version
         shell: bash
         env:
           HAUPTBRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          VERSION=$(TZ=Europe/Berlin date +%Y.%m.%d)
+          # Datum des letzten Commits, wie beim lokalen make
+          VERSION=$(make -s version)
           # Builds außerhalb des Hauptbranches als Entwurf kennzeichnen
           if [ "$GITHUB_REF" != "refs/heads/$HAUPTBRANCH" ]; then
             VERSION="$VERSION-entwurf-${GITHUB_SHA::7}"
