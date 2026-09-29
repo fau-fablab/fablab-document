@@ -10,7 +10,7 @@ Betriebsanweisungen im einheitlichen Layout: [`README_betriebsanweisung.md`](REA
 Logo
 ----
 
-Das Logo des FAU FabLab ohne FAU-Schriftzug kommt aus dem Untermodul `logo`
-([fau-fablab/logo](https://github.com/fau-fablab/logo), `Logo/Logo.pdf`) und steht wie die
+Das Logo des FAU FabLab mit FAU-Schriftzug kommt aus dem Untermodul `logo`
+([fau-fablab/logo](https://github.com/fau-fablab/logo), `Logo/Logo-FAU-bunt.pdf`) und steht wie die
 Dokumente unter [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
 Klonen daher mit `--recursive`, siehe [`README_deployment.md`](README_deployment.md).

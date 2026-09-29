@@ -71,16 +71,17 @@
 %
 % Logo aus dem Untermodul logo (fau-fablab/logo). Fehlt es, weil ohne
 % --recursive geklont wurde, steht statt des Logos der Name als Text.
+\newcommand{\FabLabLogoDatei}{\basedir/logo/Logo/Logo-FAU-bunt.pdf}
 \newcommand{\FabLabLogo}[1][1cm]{%
-        \IfFileExists{\basedir/logo/Logo/Logo.pdf}%
-                {\includegraphics[height=#1]{\basedir/logo/Logo/Logo.pdf}}%
+        \IfFileExists{\FabLabLogoDatei}%
+                {\includegraphics[height=#1]{\FabLabLogoDatei}}%
                 {\textbf{FAU FabLab}}}
-\IfFileExists{\basedir/logo/Logo/Logo.pdf}{}{%
+\IfFileExists{\FabLabLogoDatei}{}{%
         \ClassWarningNoLine{fablab-document}{Logo fehlt: Untermodul fablab-document/logo
         nicht geladen, bitte 'git submodule update --init --recursive'}}
 \fancyhead[R]{
         \begin{tikzpicture}
-                \node at (14.75cm,0.5cm) {\FabLabLogo[1cm]};%
+                \node at (17cm,0.5cm)[anchor=east, inner xsep=0pt] {\FabLabLogo[1cm]};%
                                 %Logo einfügen
                 \path[color=fablab] (0, 0) edge (17, 0);
                                 %Trennlinie einfügen
