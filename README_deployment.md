@@ -83,7 +83,7 @@ Logo
 ----
 
 Das Logo kommt aus dem Untermodul `logo` ([fau-fablab/logo](https://github.com/fau-fablab/logo),
-Datei `Logo/Logo.pdf`). Deshalb immer rekursiv klonen bzw. aktualisieren:
+Datei `Logo/Logo-FAU-bunt.pdf`). Deshalb immer rekursiv klonen bzw. aktualisieren:
 
 ```bash
 git submodule update --init --recursive
