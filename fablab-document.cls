@@ -84,9 +84,15 @@
 \fancyfoot[C]{
         Seite \thepage~von~\pageref*{LastPage}
 }
+% Versionsnummer: "make VERSION=2026.09.29" erzeugt version.tex (z.B. in der
+% GitHub Action). Ohne version.tex steht wie bisher das Datum in der Fußzeile.
+% Dokumente, die \Version selbst definieren, behalten ihre Definition.
+\AtBeginDocument{%
+        \@ifundefined{Version}{\InputIfFileExists{version}{}{}}{}%
+}
 \fancyfoot[R]{
-        \today
-}               
+        \@ifundefined{Version}{\today}{Version \Version}
+}
 \renewcommand{\headrulewidth}{0pt}
                                 %Standardlinie entfernen
 % \renewcommand{\headsep}{0pt}
