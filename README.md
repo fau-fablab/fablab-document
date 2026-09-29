@@ -14,3 +14,11 @@ Das Logo des FAU FabLab mit FAU-Schriftzug kommt aus dem Untermodul `logo`
 ([fau-fablab/logo](https://github.com/fau-fablab/logo), `Logo/Logo-FAU-bunt.pdf`) und steht wie die
 Dokumente unter [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
 Klonen daher mit `--recursive`, siehe [`README_deployment.md`](README_deployment.md).
+
+Layout
+------
+
+- Schrift: Libertinus (Serif, SIL OFL) für Fließtext und Überschriften. Betriebsanweisungen werden immer in Latin Modern Sans gesetzt, damit sie auf eine Seite passen.
+- Duplexdruck: Buchlayout (`twoside`), der breitere Rand (2,5 cm) liegt innen, außen sind es 1,5 cm.
+- Fußzeile mit blauer Linie; keine Hurenkinder und Schusterjungen.
+- Abschnitte, deren Titel „Betreuer“ enthält, beginnen auf einer neuen Seite. Mit `\renewcommand{\FLBetreuerUmbruch}{\cleardoublepage}` beginnen sie stattdessen auf einer rechten Seite.

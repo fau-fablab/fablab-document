@@ -175,7 +175,7 @@
           \textcolor{red}{\bfseries Entwurf}\else\BA@stand\fi}
     \end{tabularx}\\[1.5mm]
     \small
-    \begin{tabularx}{\linewidth}{@{}l@{\hspace{3mm}}X@{}}
+    \begin{tabularx}{\linewidth}{@{}l@{\hspace{2mm}}X@{}}
       \textbf{Betreiber:}      & \BA@betreiber \\
       \textbf{Arbeitsbereich:} & \BA@bereich \\
       \textbf{\BA@label}       & \BA@titel \\
@@ -236,8 +236,13 @@
 %  Einbinden
 % ---------------------------------------------------------------------
 % BA-Datei setzen und prüfen, dass sie auf eine Seite passt
+% Die Betriebsanweisung wird immer in Latin Modern Sans gesetzt, unabhängig von
+% der Schrift des umgebenden Dokuments, damit sie sicher auf eine Seite passt.
+\newcommand{\BA@schriftfamilie}{%
+  \def\familydefault{lmss}\def\sfdefault{lmss}\def\rmdefault{lmss}\def\bfdefault{bx}%
+  \normalfont}
 \newcommand{\BAinhalt}[1]{%
-  \par\begingroup
+  \par\begingroup\BA@schriftfamilie
   \edef\BA@startseite{\the\value{page}}%
   \input{#1}\par
   \ifnum\value{page}>\BA@startseite\relax
