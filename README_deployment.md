@@ -47,6 +47,11 @@ mkdir -p .github/workflows
 cp fablab-document/workflow.example.yml .github/workflows/pdf.yml
 ```
 
+Betriebsanweisungen
+-------------------
+
+Siehe [`README_betriebsanweisung.md`](README_betriebsanweisung.md).
+
 GitHub Action und Versionsnummer
 --------------------------------
 
