@@ -1,0 +1,91 @@
+# Gemeinsamer Workflow: baut die PDFs eines FabLab-Dokuments und
+# veröffentlicht sie bei Pushes auf den Hauptbranch als Release.
+# Aufruf aus einem Projekt: siehe workflow.example.yml
+name: PDF bauen
+
+on:
+  workflow_call:
+    inputs:
+      pakete:
+        description: "Zusätzliche Debian-Pakete, z.B. libreoffice-calc-nogui oder python3-qrcode"
+        type: string
+        default: ""
+      release:
+        description: "Bei Pushes auf den Hauptbranch ein Release mit den PDFs anlegen"
+        type: boolean
+        default: true
+
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Git, make und Zusatzpakete installieren
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git make ca-certificates ${{ inputs.pakete }}
+
+      - name: Repository auschecken
+        uses: actions/checkout@v7
+
+      - name: Untermodul fablab-document laden
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE/fablab-document"
+          # .gitmodules verweist oft per SSH, im Runner über HTTPS laden
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git submodule update --init --recursive
+
+      - name: Version bestimmen
+        id: version
+        shell: bash
+        env:
+          HAUPTBRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          # Datum des letzten Commits, wie beim lokalen make
+          VERSION=$(make -s version)
+          # Builds außerhalb des Hauptbranches als Entwurf kennzeichnen
+          if [ "$GITHUB_REF" != "refs/heads/$HAUPTBRANCH" ]; then
+            VERSION="$VERSION-entwurf-${GITHUB_SHA::7}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: PDFs bauen
+        run: make VERSION="${{ steps.version.outputs.version }}"
+
+      - name: PDFs hochladen
+        uses: actions/upload-artifact@v7
+        with:
+          name: pdf
+          path: output/*.pdf
+          if-no-files-found: error
+
+  release:
+    if: inputs.release && github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: pdf
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: PDFs herunterladen
+        uses: actions/download-artifact@v8
+        with:
+          name: pdf
+          path: pdf
+
+      - name: Release anlegen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.pdf.outputs.version }}
+        run: |
+          TAG="v$VERSION"
+          for f in pdf/*.pdf; do mv "$f" "${f%.pdf}_$VERSION.pdf"; done
+          # Mehrere Pushes am selben Tag: Release des Tages ersetzen
+          gh release delete "$TAG" --cleanup-tag --yes || true
+          gh release create "$TAG" pdf/*.pdf \
+            --target "$GITHUB_SHA" \
+            --title "${{ github.event.repository.name }} $VERSION" \
+            --notes "Automatisch gebaut aus Commit ${GITHUB_SHA::7}."

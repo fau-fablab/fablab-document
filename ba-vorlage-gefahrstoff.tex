@@ -1,0 +1,52 @@
+% =====================================================================
+%  Vorlage: Betriebsanweisung für einen Gefahrstoff
+%  Kopieren nach betriebsanweisung/ba_<stoff>.tex und ausfüllen.
+%  Grundlage: Sicherheitsdatenblatt (SDB) des Herstellers, das im FabLab
+%  vorliegen muss. Nummer: BA-GS-<Nr.> (fortlaufend für das ganze FabLab).
+%  GHS-Piktogramme: GHS01 ... GHS09 (fablab-document/ba-symbole/QUELLEN.md)
+% =====================================================================
+\BAsetup{
+  typ=gefahrstoff,
+  titel={Handelsname -- chemische Bezeichnung},
+  kurztitel={Gefahrstoff: Handelsname},
+  taetigkeit={Tätigkeiten mit dem Stoff},
+  nummer=BA-GS-XX,
+  stand=TT.MM.JJJJ,
+  verantwortlich={Name der verantwortlichen Person},
+  signalwort=GEFAHR,                  % oder ACHTUNG, laut SDB
+  entwurf,                            % entfernen, sobald freigegeben
+}
+
+\BAkopf
+
+\BAblock{GEFAHREN FÜR MENSCH UND UMWELT}{GHS07}{%
+  \begin{itemize}
+    \item Gefahrenhinweise (H-Sätze) laut Sicherheitsdatenblatt.
+  \end{itemize}}
+
+\BAblock{SCHUTZMASSNAHMEN UND VERHALTENSREGELN}{M004,M009,P022}{%
+  \begin{itemize}
+    \item Schutzausrüstung laut Sicherheitsdatenblatt.
+    \item Essen und Trinken verboten. Nach der Arbeit Hände waschen.
+  \end{itemize}}
+
+\BAblock{VERHALTEN IM GEFAHRFALL}{W001,F001}{%
+  \begin{itemize}
+    \item Verschütteten Stoff aufnehmen, Betreuer informieren.
+    \item Brand: geeignete Löschmittel laut SDB. \textbf{Feuerwehr: 112}
+  \end{itemize}}
+
+\BAblock{ERSTE HILFE}{E003,E011}{%
+  \begin{itemize}
+    \item \textbf{Augen:} ...
+    \item \textbf{Haut:} ...
+    \item \textbf{Einatmen:} ...
+    \item \textbf{Verschlucken:} ...
+  \end{itemize}\vspace{1.5mm}
+  \textbf{Notruf: 112}\qquad Giftnotruf München: 089\,/\,19240\qquad
+  FabLab: 09131\,/\,85\,28013}
+
+\BAletzterblock{SACHGERECHTE ENTSORGUNG}{}{%
+  \begin{itemize}
+    \item Entsorgung laut Sicherheitsdatenblatt.
+  \end{itemize}}

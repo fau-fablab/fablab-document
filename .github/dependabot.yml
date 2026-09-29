@@ -1,0 +1,8 @@
+# Dependabot prüft wöchentlich, ob das Untermodul logo (fau-fablab/logo) neue
+# Commits hat, und öffnet dann automatisch einen Pull Request.
+version: 2
+updates:
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: weekly

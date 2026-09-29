@@ -1,0 +1,54 @@
+% =====================================================================
+%  Vorlage: Betriebsanweisung für ein Arbeitsmittel (Maschine, Gerät)
+%  Kopieren nach betriebsanweisung/ba_<geraet>.tex und ausfüllen.
+%  Nummer nach README_betriebsanweisung.md: BA-<Kürzel>-<Nr.>
+%  Symbole: fablab-document/ba-symbole/QUELLEN.md
+% =====================================================================
+\BAsetup{
+  typ=maschine,
+  titel={Gerät Hersteller Modell (Kurzbeschreibung)},
+  kurztitel={Gerät},                  % für das Inhaltsverzeichnis der Einweisung
+  taetigkeit={Bedienen, Reinigen},
+  nummer=BA-XX-01,
+  stand=TT.MM.JJJJ,                   % Datum der Freigabe
+  verantwortlich={Name der verantwortlichen Person},
+  bild=bilder/geraet,                 % Foto, mehrere mit Komma
+  entwurf,                            % entfernen, sobald freigegeben
+}
+
+\BAkopf
+
+\BAblock{ANWENDUNGSBEREICH}{M002}{%
+  \begin{itemize}
+    \item Wofür das Gerät verwendet wird.
+    \item Benutzung nur nach Einweisung; Hinweise des Herstellers beachten.
+  \end{itemize}}
+
+\BAblock{GEFAHREN FÜR MENSCH UND UMWELT}{W001}{%
+  \begin{itemize}
+    \item \textbf{Gefahr}: Beschreibung.
+  \end{itemize}}
+
+\BAblock{SCHUTZMASSNAHMEN UND VERHALTENSREGELN}{M004}{%
+  \begin{itemize}
+    \item Maßnahme.
+  \end{itemize}}
+
+\BAblock{VERHALTEN BEI STÖRUNGEN}{W001,F001}{%
+  \begin{itemize}
+    \item Gerät ausschalten, Betreuer informieren.
+    \item Entstehungsbrand: Gerät stromlos machen, löschen. \textbf{Feuerwehr: 112}
+  \end{itemize}}
+
+\BAblock{VERHALTEN BEI UNFÄLLEN – ERSTE HILFE}{E003}{%
+  \begin{itemize}
+    \item Ruhe bewahren, Gerät abschalten, Betreuer/Ersthelfer verständigen.
+    \item Jeden Unfall den Betreuern melden und im Verbandbuch eintragen.
+  \end{itemize}\vspace{1.5mm}
+  \textbf{Notruf: 112}\qquad FabLab: 09131\,/\,85\,28013}
+
+\BAletzterblock{INSTANDHALTUNG, ENTSORGUNG}{M021}{%
+  \begin{itemize}
+    \item Wartung nur durch eingewiesene Betreuer im ausgeschalteten Zustand.
+    \item Elektrische Prüfung nach DGUV Vorschrift 3 gemäß festgelegter Prüffrist.
+  \end{itemize}}

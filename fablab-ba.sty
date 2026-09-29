@@ -1,0 +1,263 @@
+% =====================================================================
+%  fablab-ba.sty – Betriebsanweisungen des FAU FabLab (DGUV-Stil, A4)
+%
+%  Eine Betriebsanweisung (BA) ist eine .tex-Datei im Projekt, die mit
+%  \BAsetup{...} beginnt und danach \BAkopf, \BAblock und \BAletzterblock
+%  enthält (Vorlagen: ba-vorlage-maschine.tex, ba-vorlage-gefahrstoff.tex).
+%
+%  Eigenes PDF:        \documentclass{fablab-document/fablab-ba}
+%                      \begin{document}\BAinhalt{betriebsanweisung/ba_xyz}\end{document}
+%  In der Einweisung:  \usepackage{fablab-document/fablab-ba}
+%                      \BAseite[label]{betriebsanweisung/ba_xyz}
+%
+%  Doku: README_betriebsanweisung.md
+% =====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fablab-document/fablab-ba}[2026/09/29 Betriebsanweisungen FAU FabLab]
+
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{tabularx}
+\RequirePackage{enumitem}
+\RequirePackage{graphicx}
+\RequirePackage{eso-pic}
+\RequirePackage{geometry}
+
+% ---------------------------------------------------------------------
+%  Raster – EINE Stelle für alle Abstände
+% ---------------------------------------------------------------------
+\newlength{\BArand}   \setlength{\BArand}{5mm}    % Rahmenbreite links/rechts
+\newlength{\BApad}    \setlength{\BApad}{3mm}     % Innenabstand links/rechts
+\newlength{\BAsymw}   \setlength{\BAsymw}{20mm}   % Breite Symbolspalte
+\newlength{\BAgap}    \setlength{\BAgap}{4mm}     % Abstand Symbol -> Text
+\newlength{\BAsym}    \setlength{\BAsym}{12mm}    % Symbolgröße
+\newlength{\BAvpad}   \setlength{\BAvpad}{1.5mm}  % Innenabstand oben/unten
+\newlength{\BAfooth}                              % Höhe der Fußzeile
+\newlength{\BAtextw}                              % Breite der Textspalte
+
+% ---------------------------------------------------------------------
+%  Einstellungen: \BAsetup{typ=..., titel=..., ...}
+%  Jede BA beginnt mit \BAsetup; nicht angegebene Werte kommen aus den
+%  Standardwerten, die sich mit \BAstandard{...} ändern lassen.
+% ---------------------------------------------------------------------
+\newif\ifBA@entwurf
+\newif\ifBA@eingebettet
+
+\newcommand*{\BA@std@betreiber}{FAU FabLab, Friedrich-Alexander-Universität Erlangen-Nürnberg}
+\newcommand*{\BA@std@bereich}{Raum U1.239, Hörsaalgebäude (MHB), Erwin-Rommel-Str.\ 60, 91058 Erlangen}
+\newcommand*{\BA@std@logo}{fablab-document/logo/Logo/Logo}
+\newcommand*{\BA@std@schrift}{\small}
+
+\pgfkeys{
+  /fablabba/.is family, /fablabba,
+  typ/.is choice,
+  typ/maschine/.code={%
+    \definecolor{BAframe}{RGB}{0,84,159}%
+    \def\BA@grundlage{gemäß § 12 BetrSichV und § 4 DGUV Vorschrift 1}%
+    \def\BA@label{Arbeitsmittel:}},
+  typ/gefahrstoff/.code={%
+    \definecolor{BAframe}{RGB}{242,140,0}%
+    \def\BA@grundlage{gemäß § 14 GefStoffV und TRGS 555}%
+    \def\BA@label{Gefahrstoff:}},
+  typ/biostoff/.code={%
+    \definecolor{BAframe}{RGB}{0,140,60}%
+    \def\BA@grundlage{gemäß § 14 BioStoffV}%
+    \def\BA@label{Biostoff:}},
+  titel/.store in=\BA@titel,
+  kurztitel/.store in=\BA@kurztitel,
+  taetigkeit/.store in=\BA@taetigkeit,
+  nummer/.store in=\BA@nummer,
+  stand/.store in=\BA@stand,
+  verantwortlich/.store in=\BA@verantwortlich,
+  bild/.store in=\BA@bild,
+  bildcode/.store in=\BA@bildcode,
+  signalwort/.store in=\BA@signalwort,
+  grundlage/.store in=\BA@grundlage,
+  label/.store in=\BA@label,
+  betreiber/.store in=\BA@betreiber,
+  bereich/.store in=\BA@bereich,
+  logo/.store in=\BA@logo,
+  hinweis/.store in=\BA@hinweis,
+  schrift/.store in=\BA@schrift,
+  entwurf/.is if=BA@entwurf,
+  entwurf/.default=true,
+}
+
+% Standardwerte für alle BAs eines Dokuments ändern (z.B. anderer Raum)
+\newcommand{\BAstandard}[1]{%
+  \pgfqkeys{/fablabba/std}{#1}}
+\pgfkeys{
+  /fablabba/std/.is family, /fablabba/std,
+  betreiber/.code={\def\BA@std@betreiber{#1}},
+  bereich/.code={\def\BA@std@bereich{#1}},
+  logo/.code={\def\BA@std@logo{#1}},
+  schrift/.code={\def\BA@std@schrift{#1}},
+}
+
+\newcommand{\BAsetup}[1]{%
+  \pgfqkeys{/fablabba}{typ=maschine}%
+  \def\BA@titel{}\def\BA@kurztitel{}\def\BA@taetigkeit{}%
+  \def\BA@nummer{BA-??-??}\def\BA@stand{}\def\BA@verantwortlich{}%
+  \def\BA@bild{}\def\BA@bildcode{}\def\BA@signalwort{}\def\BA@hinweis{}%
+  \let\BA@betreiber\BA@std@betreiber
+  \let\BA@bereich\BA@std@bereich
+  \let\BA@logo\BA@std@logo
+  \let\BA@schrift\BA@std@schrift
+  \BA@entwurffalse
+  \pgfqkeys{/fablabba}{#1}}
+
+% ---------------------------------------------------------------------
+%  Symbole: \BAsymlist{W017,W024}; leer = kein Symbol.
+%  Zuerst fablab-document/ba-symbole/, sonst Datei im Projekt.
+% ---------------------------------------------------------------------
+\newcommand{\BAsymbol}[1]{%
+  \IfFileExists{fablab-document/ba-symbole/#1.pdf}%
+    {\includegraphics[width=\BAsym]{fablab-document/ba-symbole/#1}}%
+    {\includegraphics[width=\BAsym]{#1}}}
+\newcommand{\BAsymlist}[1]{%
+  \@for\BA@s:=#1\do{\ifx\BA@s\@empty\else\BAsymbol{\BA@s}\par\vspace{1.5mm}\fi}%
+  \vspace{-1.5mm}}
+
+% Bildspalte im Kopf: bildcode, sonst Bilder (untereinander), sonst Signalwort
+\newcommand{\BA@bilder}{%
+  \ifx\BA@bildcode\@empty
+    \ifx\BA@bild\@empty
+      {\bfseries\large\BA@signalwort}%
+    \else
+      \@for\BA@b:=\BA@bild\do{%
+        \includegraphics[width=0.75\BAsymw]{\BA@b}\par\vspace{1mm}}%
+    \fi
+  \else\BA@bildcode\fi}
+
+\tcbset{
+  BAbase/.style={
+    enhanced, sharp corners, colback=white, colframe=BAframe,
+    boxrule=0pt, leftrule=\BArand, rightrule=\BArand,
+    toprule=0pt, bottomrule=0pt,
+    left=\BApad, right=\BApad, top=\BAvpad, bottom=\BAvpad,
+    boxsep=0pt, before skip=0pt, after skip=0pt, parbox=false,
+  },
+  BAtwocol/.style={
+    sidebyside, sidebyside align=center, segmentation hidden,
+    lefthand width=\BAsymw, sidebyside gap=\BAgap,
+  },
+}
+
+% Listen nur innerhalb der BA-Kästen (lokal)
+\newcommand{\BAlisten}{%
+  \setlist[itemize]{leftmargin=3.5mm, labelsep=1.5mm, itemsep=0.8pt,
+                    topsep=0pt, parsep=0pt, partopsep=0pt, label=\textbullet}}
+
+% ---------------------------------------------------------------------
+%  Kopf
+% ---------------------------------------------------------------------
+\newcommand{\BAkopf}{%
+  \global\BAtextw=\dimexpr\linewidth-2\BArand-2\BApad-\BAsymw-\BAgap\relax
+  \ifBA@eingebettet
+    \refstepcounter{section}%
+    \def\@currentlabelname{Betriebsanweisung}%
+    \ifx\BA@label@ref\@empty\else\label{\BA@label@ref}\fi
+    \addcontentsline{toc}{section}{\protect\numberline{\thesection}%
+      Betriebsanweisung\ifx\BA@kurztitel\@empty\else\ \BA@kurztitel\fi}%
+  \fi
+  \ifBA@entwurf
+    \AddToShipoutPictureFG*{\AtPageCenter{\makebox(0,0){\rotatebox{55}{%
+      \textcolor{red!35}{\fontsize{80}{80}\selectfont\bfseries ENTWURF}}}}}%
+  \fi
+  \BA@schrift
+  \begin{tcolorbox}[BAbase, BAtwocol, toprule=\BArand]
+    \centering\BA@bilder
+    \tcblower
+    \begin{tabularx}{\linewidth}{@{}X@{}r@{}}
+      {\Huge\bfseries BETRIEBSANWEISUNG} &
+        \raisebox{-0.5mm}{\IfFileExists{\BA@logo.pdf}{\includegraphics[height=7mm]{\BA@logo}}{\textbf{FAU FabLab}}} \\[1mm]
+      {\small\BA@grundlage} &
+        {\small Nr.\ \BA@nummer\quad Stand: \ifBA@entwurf
+          \textcolor{red}{\bfseries Entwurf}\else\BA@stand\fi}
+    \end{tabularx}\\[1.5mm]
+    \small
+    \begin{tabularx}{\linewidth}{@{}l@{\hspace{3mm}}X@{}}
+      \textbf{Betreiber:}      & \BA@betreiber \\
+      \textbf{Arbeitsbereich:} & \BA@bereich \\
+      \textbf{\BA@label}       & \BA@titel \\
+      \textbf{Tätigkeit:}      & \BA@taetigkeit
+    \end{tabularx}
+  \end{tcolorbox}}
+
+% ---------------------------------------------------------------------
+%  Abschnitt:  \BAblock[tcb-Optionen]{Titel}{Symbole}{Text}
+% ---------------------------------------------------------------------
+\newcommand{\BAblock}[4][]{%
+  \begin{tcolorbox}[BAbase, BAtwocol,
+      title={#2}, colbacktitle=BAframe, coltitle=white,
+      fonttitle=\bfseries\large, halign title=center, titlerule=0pt,
+      toptitle=0.8mm, bottomtitle=0.8mm, #1]
+    \centering\BAsymlist{#3}
+    \tcblower
+    \setlength{\parskip}{0pt}\BAlisten\raggedright #4
+  \end{tcolorbox}}
+
+% ---------------------------------------------------------------------
+%  Letzter Abschnitt: füllt die Seite, Fußzeile fest am unteren Rand
+% ---------------------------------------------------------------------
+\newcommand{\BAfusszeile}{\small
+  \begin{tabularx}{\BAtextw}{@{}l@{\hspace{2mm}}l@{\hspace{8mm}}l@{\hspace{2mm}}X@{}}
+    Stand: & \ifBA@entwurf Entwurf\else\BA@stand\fi &
+      Verantwortlich (Unterschrift): & \hrulefill \\[-1mm]
+    & & & \scriptsize\BA@verantwortlich
+  \end{tabularx}%
+  \ifx\BA@hinweis\@empty\else\par\vspace{0.5mm}{\tiny\BA@hinweis}\fi
+  \@ifundefined{Version}{}{\par\vspace{0.3mm}\hfill{\tiny Version \Version}}}
+
+\newsavebox{\BA@probe}
+\newcommand{\BAletzterblock}[3]{%
+  \setlength{\BAfooth}{\ifx\BA@hinweis\@empty 13mm\else 16mm\fi}%
+  \par
+  % Passt der letzte Abschnitt samt Fußzeile noch auf die Seite? Sonst
+  % würde er über den unteren Rand hinaus gesetzt.
+  \sbox{\BA@probe}{\begin{minipage}{\linewidth}%
+    \BAblock[bottomrule=\BArand, bottom=\dimexpr\BAfooth+\BAvpad\relax]{#1}{#2}{#3}%
+    \end{minipage}}%
+  \ifdim\dimexpr\ht\BA@probe+\dp\BA@probe\relax>\dimexpr\pagegoal-\pagetotal\relax
+    \PackageError{fablab-ba}{Betriebsanweisung ist länger als eine Seite
+      (Abschnitt #1 passt nicht mehr)}%
+      {Text kürzen oder in \string\BAsetup\space schrift=\string\footnotesize\space setzen.}%
+  \fi
+  \BAblock[height fill, bottomrule=\BArand,
+    bottom=\dimexpr\BAfooth+\BAvpad\relax,
+    overlay={%
+      \draw[BAframe,line width=0.6mm]
+        ([yshift=\BAfooth]interior.south west) --
+        ([yshift=\BAfooth]interior.south east);
+      \node[anchor=south west, inner sep=0pt, text width=\BAtextw]
+        at ([xshift=\BApad+\BAsymw+\BAgap, yshift=1mm]interior.south west)
+        {\BAfusszeile};}]{#1}{#2}{#3}}
+
+% ---------------------------------------------------------------------
+%  Einbinden
+% ---------------------------------------------------------------------
+% BA-Datei setzen und prüfen, dass sie auf eine Seite passt
+\newcommand{\BAinhalt}[1]{%
+  \par\begingroup
+  \edef\BA@startseite{\the\value{page}}%
+  \input{#1}\par
+  \ifnum\value{page}>\BA@startseite\relax
+    \PackageError{fablab-ba}{Betriebsanweisung #1 ist länger als eine Seite}%
+      {Text kürzen oder in \string\BAsetup\space schrift=\string\footnotesize\space setzen.}%
+  \fi
+  \endgroup}
+
+% Ganze Seite in einem anderen Dokument (z.B. der Einweisung):
+% eigene Ränder, ohne Kopf-/Fußzeile, mit Eintrag im Inhaltsverzeichnis
+\def\BA@label@ref{}
+\newcommand{\BAseite}[2][]{%
+  \clearpage
+  \newgeometry{margin=10mm,hoffset=0pt,voffset=0pt}%
+  \thispagestyle{empty}%
+  \begingroup
+  \BA@eingebettettrue\def\BA@label@ref{#1}%
+  \BAinhalt{#2}%
+  \endgroup
+  \restoregeometry
+  \clearpage}
+
+\endinput
