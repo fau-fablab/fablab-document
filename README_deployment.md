@@ -66,6 +66,9 @@ GitHub Action und Versionsnummer
 Der gemeinsame Workflow [`.github/workflows/pdf.yml`](.github/workflows/pdf.yml) baut die PDFs mit `make`
 und stellt sie als Artefakt bereit. Bei Pushes auf den Hauptbranch legt er ein Release
 `vJJJJ.MM.TT` mit den PDFs an; mehrere Pushes am selben Tag ersetzen das Release des Tages.
+Neben den PDFs mit Datum im Dateinamen enthält das Release ein `output.tar.gz` mit
+denselben PDFs unter ihren festen Namen. Der Buildserver holt es über
+`https://github.com/fau-fablab/<projekt>/releases/latest/download/output.tar.gz` ab.
 
 Die Version steht rechts in der Fußzeile (`Version 2026.09.29`). `make` nimmt dafür
 das Datum des letzten Commits, bei nicht committeten Änderungen mit `-entwurf`.

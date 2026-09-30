@@ -82,10 +82,13 @@ jobs:
           VERSION: ${{ needs.pdf.outputs.version }}
         run: |
           TAG="v$VERSION"
+          # Zusätzlich alle PDFs unter ihren festen Namen in einem Archiv,
+          # damit der Buildserver sie über eine gleichbleibende URL abholen kann
+          tar -czf output.tar.gz -C pdf .
           for f in pdf/*.pdf; do mv "$f" "${f%.pdf}_$VERSION.pdf"; done
           # Mehrere Pushes am selben Tag: Release des Tages ersetzen
           gh release delete "$TAG" --cleanup-tag --yes || true
-          gh release create "$TAG" pdf/*.pdf \
+          gh release create "$TAG" pdf/*.pdf output.tar.gz \
             --target "$GITHUB_SHA" \
             --title "${{ github.event.repository.name }} $VERSION" \
             --notes "Automatisch gebaut aus Commit ${GITHUB_SHA::7}."
