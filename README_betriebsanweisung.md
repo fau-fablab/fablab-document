@@ -98,6 +98,7 @@ mehreren Geräten vorkommen kann.
 | `TK` | Tischkreissäge | tischkreissaege-einweisung |
 | `HK` | Handkreissäge (Festool) | festool-kreissaege-einweisung |
 | `OF` | Oberfräse (Festool) | festool-oberfraese-einweisung |
+| `DF` | Dübelfräse (Festool DOMINO) | festool-duebelfraese-einweisung |
 | `SO` | Shaper Origin | shaper-origin-einweisung |
 | `SP` | Schneideplotter | schneideplotter-einweisung |
 | `ST` | Stickmaschine | stickmaschine-einweisung |
