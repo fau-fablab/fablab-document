@@ -32,13 +32,13 @@ Eigenes PDF, z.B. `Betriebsanweisung_Geraet.tex`:
 \begin{document}\BAinhalt{betriebsanweisung/ba_geraet}\end{document}
 ```
 
-Im `Makefile` bekommt jede BA eine eigene Zeile:
+Im `Makefile` bekommt jede BA eine eigene Zeile, standardmäßig auskommentiert:
 
 ```make
 TARGET  = Einweisung_Geraet Einweisungsliste_Geraet
-# Betriebsanweisung als eigenes PDF und als Seite in der Einweisung.
-# Zeile auskommentieren: BA wird an beiden Stellen nicht gebaut.
-TARGET += Betriebsanweisung_Geraet
+# Betriebsanweisung, standardmäßig aus. Einkommentieren: BA wird als eigenes PDF
+# und als Seite in der Einweisung gebaut.
+#TARGET += Betriebsanweisung_Geraet
 include fablab-document/Makefile.include
 ```
 
@@ -53,16 +53,17 @@ In der Einweisung (Seite mit eigenem Rand, Eintrag im Inhaltsverzeichnis):
 Das optionale Argument ist ein Label für `\ref`. Mehrere BAs pro Projekt sind möglich,
 z.B. eine für das Gerät und eine für einen Gefahrstoff.
 
-BA abschalten
--------------
+BA ein- und ausschalten
+-----------------------
 
-Eine BA wird nur gebaut, wenn ihr eigenes PDF in `TARGET` steht. Wer die Zeile
-`TARGET += Betriebsanweisung_Geraet` im `Makefile` auskommentiert, schaltet sie an
-beiden Stellen ab: `make` baut kein eigenes PDF mehr, und `\BAseite` lässt die Seite
-in der Einweisung weg (mit Warnung im Log). Bei mehreren BAs gilt das für jede einzeln.
+Betriebsanweisungen sind standardmäßig **aus**. Eine BA wird nur gebaut, wenn ihr
+eigenes PDF in `TARGET` steht. Die Zeile `TARGET += Betriebsanweisung_Geraet` im
+`Makefile` schaltet sie an beiden Stellen ein: `make` baut das eigene PDF, und
+`\BAseite` bindet die Seite in die Einweisung ein. Auskommentiert ist sie an beiden
+Stellen aus (mit Warnung im Log). Bei mehreren BAs gilt das für jede einzeln.
 
 Dafür schreibt `make` die aktiven BAs nach `ba-aktiv.tex` (in `.gitignore` eintragen).
-Ohne diese Datei, also beim Bauen ohne `make`, werden alle BAs eingebunden.
+Ohne diese Datei, also beim Bauen ohne `make`, ist keine BA aktiv.
 
 Verweise auf die BA im Text, die sonst ins Leere zeigen würden:
 

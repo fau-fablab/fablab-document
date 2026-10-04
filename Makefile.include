@@ -148,11 +148,11 @@ version.tex: FORCE
 	@if cmp -s $@.neu $@; then rm $@.neu; else mv $@.neu $@; fi
 endif
 
-# Betriebsanweisungen: Eine BA ist aktiv, wenn ein Dokument in TARGET sie mit
-# \BAinhalt{datei} als eigenes PDF baut. ba-aktiv.tex listet die aktiven BAs,
-# \BAseite{datei} in der Einweisung bindet nur diese ein. Eine auskommentierte
-# Zeile "TARGET += Betriebsanweisung_..." im Makefile schaltet die BA also als
-# eigenes PDF und in der Einweisung ab.
+# Betriebsanweisungen sind standardmäßig aus. Eine BA ist aktiv, wenn ein
+# Dokument in TARGET sie mit \BAinhalt{datei} als eigenes PDF baut.
+# ba-aktiv.tex listet die aktiven BAs, \BAseite{datei} in der Einweisung bindet
+# nur diese ein. Die Zeile "TARGET += Betriebsanweisung_..." im Makefile schaltet
+# die BA also als eigenes PDF und in der Einweisung ein, auskommentiert ist sie aus.
 BASEITEN := $(shell grep -l '^[^%]*\\BAseite' $(TEXTARGETS) 2>/dev/null)
 ifneq ($(BASEITEN),)
 BAAKTIV := $(shell grep -h '^[^%]*\\BAinhalt{' $(TEXTARGETS) 2>/dev/null | \
