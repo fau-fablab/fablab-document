@@ -97,7 +97,7 @@
 % Felder mit \fancyfoot[L], [C], [R] überschreiben.
 \fancyfoot[L]{\@author}
 \colorlet{FLgrau}{black!45} % englische Übersetzungen in hellem Grau
-\fancyfoot[C]{Seite \thepage~von~\pageref*{LastPage}{\color{FLgrau}\ \textperiodcentered\ Page \thepage~of~\pageref*{LastPage}}}
+\fancyfoot[C]{\thepage\,/\,\pageref*{LastPage}} % sprachneutral, z.B. 1/4
 % Versionsnummer: "make VERSION=2026.09.29" erzeugt version.tex (z.B. in der
 % GitHub Action). Ohne version.tex steht wie bisher das Datum in der Fußzeile.
 % Dokumente, die \Version selbst definieren, behalten ihre Definition.

@@ -22,5 +22,5 @@ Layout
 - Duplexdruck: Buchlayout (`twoside`), der breitere Rand (2,5 cm) liegt innen, außen sind es 1,5 cm.
 - Fußzeile mit blauer Linie; keine Hurenkinder und Schusterjungen.
 - Unter der Fußzeile steht auf jeder Seite klein die Lizenzzeile (CC BY-SA 3.0, Repository, Revision), auch wenn ein Dokument `\fancyfoot[L]`, `[C]` oder `[R]` überschreibt. Das Repository trägt `make` aus `git remote` in `revision.tex` ein, abweichend mit `\repo{name}`; abschalten mit `\FLLizenzzeilefalse`.
-- Englische Übersetzungen in hellem Grau (`FLgrau`), z. B. „Seite 1 von 4 · Page 1 of 4“.
+- Seitenzahl in der Fußzeile sprachneutral als „1/4“. Englische Übersetzungen in hellem Grau (`FLgrau`).
 - Abschnitte, deren Titel „Betreuer“ enthält, beginnen auf einer neuen Seite. Mit `\renewcommand{\FLBetreuerUmbruch}{\cleardoublepage}` beginnen sie stattdessen auf einer rechten Seite.
