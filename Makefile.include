@@ -148,6 +148,23 @@ version.tex: FORCE
 	@if cmp -s $@.neu $@; then rm $@.neu; else mv $@.neu $@; fi
 endif
 
+# Betriebsanweisungen: Eine BA ist aktiv, wenn ein Dokument in TARGET sie mit
+# \BAinhalt{datei} als eigenes PDF baut. ba-aktiv.tex listet die aktiven BAs,
+# \BAseite{datei} in der Einweisung bindet nur diese ein. Eine auskommentierte
+# Zeile "TARGET += Betriebsanweisung_..." im Makefile schaltet die BA also als
+# eigenes PDF und in der Einweisung ab.
+BASEITEN := $(shell grep -l '^[^%]*\\BAseite' $(TEXTARGETS) 2>/dev/null)
+ifneq ($(BASEITEN),)
+BAAKTIV := $(shell grep -h '^[^%]*\\BAinhalt{' $(TEXTARGETS) 2>/dev/null | \
+		sed -e 's/^.*\\BAinhalt{\([^}]*\)}.*/\1/')
+REVDEPS += ba-aktiv.tex
+# nur neu schreiben, wenn sich die Liste ändert (wie version.tex)
+ba-aktiv.tex: FORCE
+	@{ echo '% erzeugt von make: Betriebsanweisungen, die gebaut werden'; \
+		for ba in $(BAAKTIV); do printf '\\BAaktiv{%s}\n' "$$ba"; done; } > $@.neu
+	@if cmp -s $@.neu $@; then rm $@.neu; else mv $@.neu $@; fi
+endif
+
 # to generate aux but not pdf from pdflatex, use -draftmode
 .INTERMEDIATE: $(AUXFILES)
 %.aux: %.tex $(REVDEPS)
@@ -189,11 +206,13 @@ clean: clean-output
 		$(T).out $(T).blg $(T).bbl \
 		$(T).lof $(T).lot $(T).toc $(T).idx \
 		$(T).nav $(T).snm) \
-		$(REVDEPS) version.tex version.tex.neu $(AUXFILES) $(LOGFILES) \
+		$(REVDEPS) version.tex version.tex.neu ba-aktiv.tex ba-aktiv.tex.neu $(AUXFILES) $(LOGFILES) \
 		$(EXTRACLEAN)
 
+# output/ enthält genau die PDFs aus TARGET, alte (z.B. einer abgeschalteten BA) fliegen raus
 copy-output: pdf
 	mkdir -p output
+	find output/ -name "*.pdf" -delete
 	cp $(PDFTARGETS) output/
 
 clean-output:

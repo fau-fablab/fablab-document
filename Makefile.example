@@ -1,2 +1,5 @@
-TARGET=my_tex_main_filename__TODO__changeme
+TARGET  = my_tex_main_filename__TODO__changeme
+# Betriebsanweisung (falls vorhanden) als eigenes PDF und als Seite in der Einweisung.
+# Zeile auskommentieren: BA wird an beiden Stellen nicht gebaut.
+#TARGET += Betriebsanweisung_Geraet
 include fablab-document/Makefile.include

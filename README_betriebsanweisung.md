@@ -25,11 +25,21 @@ mkdir -p betriebsanweisung
 cp fablab-document/ba-vorlage-maschine.tex betriebsanweisung/ba_geraet.tex
 ```
 
-Eigenes PDF, z.B. `Betriebsanweisung_Geraet.tex` (und in `TARGET` im `Makefile` eintragen):
+Eigenes PDF, z.B. `Betriebsanweisung_Geraet.tex`:
 
 ```latex
 \documentclass{fablab-document/fablab-ba}
 \begin{document}\BAinhalt{betriebsanweisung/ba_geraet}\end{document}
+```
+
+Im `Makefile` bekommt jede BA eine eigene Zeile:
+
+```make
+TARGET  = Einweisung_Geraet Einweisungsliste_Geraet
+# Betriebsanweisung als eigenes PDF und als Seite in der Einweisung.
+# Zeile auskommentieren: BA wird an beiden Stellen nicht gebaut.
+TARGET += Betriebsanweisung_Geraet
+include fablab-document/Makefile.include
 ```
 
 In der Einweisung (Seite mit eigenem Rand, Eintrag im Inhaltsverzeichnis):
@@ -42,6 +52,25 @@ In der Einweisung (Seite mit eigenem Rand, Eintrag im Inhaltsverzeichnis):
 
 Das optionale Argument ist ein Label für `\ref`. Mehrere BAs pro Projekt sind möglich,
 z.B. eine für das Gerät und eine für einen Gefahrstoff.
+
+BA abschalten
+-------------
+
+Eine BA wird nur gebaut, wenn ihr eigenes PDF in `TARGET` steht. Wer die Zeile
+`TARGET += Betriebsanweisung_Geraet` im `Makefile` auskommentiert, schaltet sie an
+beiden Stellen ab: `make` baut kein eigenes PDF mehr, und `\BAseite` lässt die Seite
+in der Einweisung weg (mit Warnung im Log). Bei mehreren BAs gilt das für jede einzeln.
+
+Dafür schreibt `make` die aktiven BAs nach `ba-aktiv.tex` (in `.gitignore` eintragen).
+Ohne diese Datei, also beim Bauen ohne `make`, werden alle BAs eingebunden.
+
+Verweise auf die BA im Text, die sonst ins Leere zeigen würden:
+
+```latex
+\BAfalls{betriebsanweisung/ba_geraet}{Zusätzlich gilt die Betriebsanweisung
+  (Abschnitt~\ref{sec:betriebsanweisung}).}
+\BAfalls[Text ohne BA]{betriebsanweisung/ba_geraet}{Text mit BA}
+```
 
 Einstellungen
 -------------
