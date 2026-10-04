@@ -251,10 +251,30 @@
   \fi
   \endgroup}
 
+% Welche BAs gebaut werden, steht im Makefile des Projekts: Eine BA ist aktiv,
+% wenn ein Dokument in TARGET sie mit \BAinhalt als eigenes PDF baut. make
+% schreibt die aktiven BAs nach ba-aktiv.tex. Standardmäßig ist eine BA aus:
+% Erst die Zeile "TARGET += Betriebsanweisung_..." im Makefile schaltet sie als
+% eigenes PDF und in der Einweisung (\BAseite) ein. Ohne ba-aktiv.tex (Bauen
+% ohne make) ist keine BA aktiv.
+\def\BA@aktive{,}
+\newcommand{\BAaktiv}[1]{\edef\BA@aktive{\BA@aktive#1,}}
+\InputIfFileExists{ba-aktiv.tex}{}{}
+% \BAfalls{datei}{Text}: Text nur, wenn die BA gebaut wird, z.B. für Verweise
+% wie "siehe Abschnitt \ref{sec:betriebsanweisung}"; optional Text sonst
+\newcommand{\BAfalls}[3][]{\BA@wennaktiv{#2}{#3}{#1}}
+\newcommand{\BA@wennaktiv}[1]{%
+  \edef\BA@tmp{\noexpand\in@{,#1,}{\BA@aktive}}\BA@tmp
+  \ifin@ \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi}
+
 % Ganze Seite in einem anderen Dokument (z.B. der Einweisung):
 % eigene Ränder, ohne Kopf-/Fußzeile, mit Eintrag im Inhaltsverzeichnis
 \def\BA@label@ref{}
 \newcommand{\BAseite}[2][]{%
+  \BA@wennaktiv{#2}{\BA@seite[#1]{#2}}%
+    {\PackageWarningNoLine{fablab-ba}{Betriebsanweisung #2 ist aus. Einschalten mit
+      der Zeile "TARGET += Betriebsanweisung_..." im Makefile, dann make}}}
+\newcommand{\BA@seite}[2][]{%
   \clearpage
   \newgeometry{margin=10mm,hoffset=0pt,voffset=0pt}%
   \thispagestyle{empty}%

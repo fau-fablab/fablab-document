@@ -78,6 +78,8 @@ ifeq ($(shell git status >/dev/null 2>&1 && echo USING_GIT),USING_GIT)
   else
     # plain git
     REVISION := $(shell git rev-parse --short HEAD)
+    # Name des Repositorys für die Lizenzzeile, z.B. lasercutter-einweisung
+    REPOSITORY := $(shell basename -s .git "$$(git remote get-url origin 2>/dev/null || git rev-parse --show-toplevel)")
     GIT_BRANCH := $(shell git symbolic-ref HEAD 2>/dev/null)
     VCSTURD := $(subst $(SPACE),\ ,$(shell git rev-parse --show-toplevel)/.git/$(GIT_BRANCH))
   endif
@@ -109,6 +111,9 @@ ifneq ($(REVISION),)
 REVDEPS += revision.tex
 revision.tex: $(VCSTURD)
 	/bin/echo '\newcommand{\Revision}'"{$(REVISION)}" > $@
+ifneq ($(REPOSITORY),)
+	/bin/echo '\newcommand{\Repository}'"{$(REPOSITORY)}" >> $@
+endif
 AUXFILES += revision.aux
 endif
 
@@ -140,6 +145,23 @@ REVDEPS += version.tex
 # "make" alle PDFs neu bauen
 version.tex: FORCE
 	@/bin/echo '\newcommand{\Version}'"{$(VERSION)}" > $@.neu
+	@if cmp -s $@.neu $@; then rm $@.neu; else mv $@.neu $@; fi
+endif
+
+# Betriebsanweisungen sind standardmäßig aus. Eine BA ist aktiv, wenn ein
+# Dokument in TARGET sie mit \BAinhalt{datei} als eigenes PDF baut.
+# ba-aktiv.tex listet die aktiven BAs, \BAseite{datei} in der Einweisung bindet
+# nur diese ein. Die Zeile "TARGET += Betriebsanweisung_..." im Makefile schaltet
+# die BA also als eigenes PDF und in der Einweisung ein, auskommentiert ist sie aus.
+BASEITEN := $(shell grep -l '^[^%]*\\BAseite' $(TEXTARGETS) 2>/dev/null)
+ifneq ($(BASEITEN),)
+BAAKTIV := $(shell grep -h '^[^%]*\\BAinhalt{' $(TEXTARGETS) 2>/dev/null | \
+		sed -e 's/^.*\\BAinhalt{\([^}]*\)}.*/\1/')
+REVDEPS += ba-aktiv.tex
+# nur neu schreiben, wenn sich die Liste ändert (wie version.tex)
+ba-aktiv.tex: FORCE
+	@{ echo '% erzeugt von make: Betriebsanweisungen, die gebaut werden'; \
+		for ba in $(BAAKTIV); do printf '\\BAaktiv{%s}\n' "$$ba"; done; } > $@.neu
 	@if cmp -s $@.neu $@; then rm $@.neu; else mv $@.neu $@; fi
 endif
 
@@ -184,11 +206,13 @@ clean: clean-output
 		$(T).out $(T).blg $(T).bbl \
 		$(T).lof $(T).lot $(T).toc $(T).idx \
 		$(T).nav $(T).snm) \
-		$(REVDEPS) version.tex version.tex.neu $(AUXFILES) $(LOGFILES) \
+		$(REVDEPS) version.tex version.tex.neu ba-aktiv.tex ba-aktiv.tex.neu $(AUXFILES) $(LOGFILES) \
 		$(EXTRACLEAN)
 
+# output/ enthält genau die PDFs aus TARGET, alte (z.B. einer abgeschalteten BA) fliegen raus
 copy-output: pdf
 	mkdir -p output
+	find output/ -name "*.pdf" -delete
 	cp $(PDFTARGETS) output/
 
 clean-output:
