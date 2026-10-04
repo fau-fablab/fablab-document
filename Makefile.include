@@ -78,6 +78,8 @@ ifeq ($(shell git status >/dev/null 2>&1 && echo USING_GIT),USING_GIT)
   else
     # plain git
     REVISION := $(shell git rev-parse --short HEAD)
+    # Name des Repositorys für die Lizenzzeile, z.B. lasercutter-einweisung
+    REPOSITORY := $(shell basename -s .git "$$(git remote get-url origin 2>/dev/null || git rev-parse --show-toplevel)")
     GIT_BRANCH := $(shell git symbolic-ref HEAD 2>/dev/null)
     VCSTURD := $(subst $(SPACE),\ ,$(shell git rev-parse --show-toplevel)/.git/$(GIT_BRANCH))
   endif
@@ -109,6 +111,9 @@ ifneq ($(REVISION),)
 REVDEPS += revision.tex
 revision.tex: $(VCSTURD)
 	/bin/echo '\newcommand{\Revision}'"{$(REVISION)}" > $@
+ifneq ($(REPOSITORY),)
+	/bin/echo '\newcommand{\Repository}'"{$(REPOSITORY)}" >> $@
+endif
 AUXFILES += revision.aux
 endif
 
