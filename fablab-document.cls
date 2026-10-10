@@ -177,7 +177,7 @@
 \textbf{Verbreiten und Bearbeiten dieser Inhalte ist ausdrücklich erwünscht}, du musst (in der Regel) nur
 \begin{itemize}
  \item Quelle und Lizenz korrekt angeben, wie etwa:\\
-FAU FabLab et al.: #2, \url{https://github.com/fau-fablab/#1},\\Lizenz CC-BY-SA 3.0, \url{https://creativecommons.org/licenses/by-sa/3.0/}.
+FAU FabLab et al.: #2,\\\url{https://github.com/fau-fablab/#1},\\Lizenz CC-BY-SA 3.0, \url{https://creativecommons.org/licenses/by-sa/3.0/}.
  \item das neue (gesamte) Dokument auch unter dieser Lizenz veröffentlichen.
 \end{itemize}
 
