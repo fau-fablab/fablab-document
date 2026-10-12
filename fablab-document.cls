@@ -126,7 +126,7 @@
 \AtBeginDocument{\ifx\FLRepo\@empty\@ifundefined{Repository}{}{\let\FLRepo\Repository}\fi}
 \newcommand{\FLLizenzzeile}{{\sffamily\tiny\color{black!60}%
         \IfFileExists{\basedir/cc-by-sa.pdf}{\raisebox{-0.35ex}{\includegraphics[height=2.2ex]{\basedir/cc-by-sa.pdf}}\enspace}{}%
-        \copyright\ FAU FabLab et al.\ \textperiodcentered\ Lizenz / License CC BY-SA 3.0%
+        \copyright\ FAU FabLab et al.\ \textperiodcentered\ Lizenz / License CC BY-SA 4.0%
         \ifx\FLRepo\@empty\else\ \textperiodcentered\ github.com/fau-fablab/\FLRepo\fi
         \ifFLRevision\ \textperiodcentered\ Rev.~\Revision\fi}}
 % Fußzeile etwas höher, damit die Lizenzzeile im druckbaren Bereich liegt
@@ -177,7 +177,7 @@
 \textbf{Verbreiten und Bearbeiten dieser Inhalte ist ausdrücklich erwünscht}, du musst (in der Regel) nur
 \begin{itemize}
  \item Quelle und Lizenz korrekt angeben, wie etwa:\\
-FAU FabLab et al.: #2,\\\url{https://github.com/fau-fablab/#1},\\Lizenz CC-BY-SA 3.0, \url{https://creativecommons.org/licenses/by-sa/3.0/}.
+FAU FabLab et al.: #2,\\\url{https://github.com/fau-fablab/#1},\\Lizenz CC BY-SA 4.0, \url{https://creativecommons.org/licenses/by-sa/4.0/}.
  \item das neue (gesamte) Dokument auch unter dieser Lizenz veröffentlichen.
 \end{itemize}
 
@@ -187,7 +187,7 @@ FAU FabLab et al.: #2,\\\url{https://github.com/fau-fablab/#1},\\Lizenz CC-BY-SA
 \includegraphics[width=4cm]{fablab-document/cc-by-sa.pdf}  
 \vspace{-2.6em}
 \end{wrapfigure}
-Dieses Dokument \enquote{#2} des FAU FabLab und weiterer Autoren ist, bis auf besonders gekennzeichnete Stellen, lizenziert unter einer \emph{Creative Commons Namensnennung -- Weitergabe unter gleichen Bedingungen 3.0 Unported} Lizenz. Um eine Kopie dieser Lizenz zu sehen, besuchen Sie \url{http://creativecommons.org/licenses/by-sa/3.0/}.
+Dieses Dokument \enquote{#2} des FAU FabLab und weiterer Autoren ist, bis auf besonders gekennzeichnete Stellen, lizenziert unter einer \emph{Creative Commons Namensnennung -- Weitergabe unter gleichen Bedingungen 4.0 International} Lizenz. Um eine Kopie dieser Lizenz zu sehen, besuchen Sie \url{https://creativecommons.org/licenses/by-sa/4.0/}.
 
 Quelltext und Liste der Autoren auf GitHub: \url{https://github.com/fau-fablab/#1}.\\
 Verbesserungsvorschläge gerne auch an \href{mailto:kontakt@fablab.fau.de}{kontakt@fablab.fau.de}.
